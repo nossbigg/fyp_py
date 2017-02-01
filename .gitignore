@@ -1,5 +1,6 @@
 *.iml
 *.pyc
+out/
 .gradle
 /local.properties
 /.idea/workspace.xml
@@ -8,3 +9,6 @@
 /build
 /captures
 /.idea/misc.xml
+/main/datasets/*
+/main/d3viz/*
+/controller/*.pyc
