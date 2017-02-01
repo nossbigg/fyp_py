@@ -18,24 +18,6 @@ tweetDict = dataMunger.buildTweetDictFromList(tweetList)
 
 # generate csv for labelling
 # stores tweets that have already been represented (prevents duplicates of retweets with same parent)
-# tweetsRepresented = {}
-# tweetListExport = []
-# for tweet in tweetDict.values():
-#   tweetId = tweet['id']
-#   # for retweets
-#   if tweet['tweet_type'] == TT.TweetType.RETWEET:
-#     parentTweetId = tweet['retweeted_status']['id']
-#     if parentTweetId not in tweetsRepresented:
-#       tweetsRepresented[parentTweetId] = 0
-#     else:
-#       continue
-#   # for all other types
-#   else:
-#     tweetsRepresented[tweetId] = 0
-#   tweetListExport.append({"id": tweetId})
-
-# generate csv for labelling
-# stores tweets that have already been represented (prevents duplicates of retweets with same parent)
 tweets = {}
 tweetParentToIdLookup = {}
 
