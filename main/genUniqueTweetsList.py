@@ -1,20 +1,20 @@
 # Generates list of unique tweets and stores it into database
 # TODO modularize this (so that can use with other collections)
 
-import controller.DataMunger as DM
 import model.TweetType as TT
 import pymongo
 
 # retrieve tweets from mongo
+from controller import TweetProcessingUtils as TPU
+
 client = pymongo.MongoClient()
 db = client.tweetDb
 collection = db.tweets
 query = collection.find({}, {"id": 1, "tweet_type": 1, "retweeted_status": 1})
 
 # create tweet dictionary
-dataMunger = DM.DataMunger()
 tweetList = list(query)
-tweetDict = dataMunger.buildTweetDictFromList(tweetList)
+tweetDict = TPU.TweetProcessingUtils.buildTweetDictFromList(tweetList)
 
 # generate csv for labelling
 # stores tweets that have already been represented (prevents duplicates of retweets with same parent)
@@ -23,6 +23,7 @@ tweetParentToIdLookup = {}
 
 for tweet in tweetDict.values():
   tweetId = tweet['id']
+
   # for retweets
   if tweet['tweet_type'] == TT.TweetType.RETWEET:
     parentTweetId = tweet['retweeted_status']['id']
@@ -37,7 +38,7 @@ for tweet in tweetDict.values():
     if tweetId not in tweets:
       tweets[tweetId] = []
     else:
-      #FIXME algo when represented tweet meets parent
+      # FIXME algo when represented tweet meets parent
       pass
 
 tweetListExport = []

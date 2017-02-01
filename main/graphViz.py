@@ -5,17 +5,18 @@ import networkx as nx
 import pymongo
 
 # retrieve tweets from mongo
+from controller import TweetProcessingUtils as TPU
+
 client = pymongo.MongoClient()
 db = client.tweetDb
 collection = db.tweets
 
 # query: get all tweets
-query = collection.find()
+query = collection.find().limit(100)
 
 # create tweet dictionary
-dataMunger = DM.DataMunger()
 tweetList = list(query)
-tweetDict = dataMunger.buildTweetDictFromList(tweetList)
+tweetDict = TPU.TweetProcessingUtils.buildTweetDictFromList(tweetList)
 
 # generate graph
 graphManager = GM.GraphManager(tweetDict)

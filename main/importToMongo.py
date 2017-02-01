@@ -4,14 +4,16 @@ import pymongo
 from controller import DataMunger as DM
 
 # get unique tweets from source
-dirToSearch = "C:\\Users\\Gibson\\adbpull\\data\\gib-tweet-fyp\\#sickhillary"
+from controller import TweetProcessingUtils as TPU
+
+dirToSearch = "C:/Users/Gibson/adbpull/com.nossbigg.htmlminder/files/data/gib-tweet-fyp/#sickhillary"
 dataMunger = DM.DataMunger()
 tweetsDict = dataMunger.getTweetsFromSource(dirToSearch)
 
 # label tweets by type
-tweetsDict = dataMunger.labelTweetTypeByList(tweetsDict)
+tweetsDict = TPU.TweetProcessingUtils.labelTweetTypeByList(tweetsDict)
 # add sentiment label field
-tweetsDict = dataMunger.addTweetSentimentLabelToDict(tweetsDict)
+tweetsDict = TPU.TweetProcessingUtils.addTweetSentimentLabelToDict(tweetsDict)
 # convert time fields into timestamp
 # TODO convert time fields to mongodb timestamp
 

@@ -1,4 +1,4 @@
-import controller.DataMunger as DM
+import controller.TweetProcessingUtils as TPU
 import controller.GraphManager as GM
 import pymongo
 
@@ -11,26 +11,19 @@ collection = db.tweets
 query = collection.find()
 
 # create tweet dictionary
-dataMunger = DM.DataMunger()
 tweetList = list(query)
-tweetDict = dataMunger.buildTweetDictFromList(tweetList)
+tweetDict = TPU.TweetProcessingUtils.buildTweetDictFromList(tweetList)
 
 # method to generate json file
-def genD3JsonFile(tweetDict, filename, min_degree):
+def genD3JsonFile(tweetDict, filename):
   # generate graph
   graphManager = GM.GraphManager(tweetDict)
-
-  # if(min_degree>0):
 
   # generate and save graph to d3 format
   jsonForD3 = graphManager.getD3VizJsonFormat()
   target = open(filename, 'w')
   target.write(jsonForD3)
   target.close()
-
-# method to generate json file
-def genD3JsonFile(tweetDict, filename):
-  genD3JsonFile(tweetDict, filename, 0)
 
 # save full d3
 genD3JsonFile(tweetDict, "tweetD3(full).json")
