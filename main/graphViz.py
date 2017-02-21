@@ -1,4 +1,3 @@
-import controller.DataMunger as DM
 import controller.GraphManager as GM
 import controller.GraphVizUtils as GV
 import networkx as nx
@@ -28,4 +27,3 @@ degree_values = nx.degree(G).values()
 # generate graph degree histogram
 gv = GV.GraphVizUtils()
 gv.displayGraphDegreeDist(graphManager.graph)
-
