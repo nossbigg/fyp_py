@@ -60,3 +60,7 @@ class PreprocessingUtils:
     upperLimit = mean + (stdDev * upperStdDev)
 
     return [term for term in freqDist if lowerLimit < freqDist[term] < upperLimit]
+
+  @staticmethod
+  def tokensToWord(tokens):
+    return " ".join(tokens)
