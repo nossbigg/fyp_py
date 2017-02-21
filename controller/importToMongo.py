@@ -1,10 +1,8 @@
 # Imports unique tweets from source files into mongodb
 
 import pymongo
-from controller import DataMunger as DM
-
-# get unique tweets from source
 from controller import TweetProcessingUtils as TPU
+from test import DataMunger as DM
 
 dirToSearch = "C:/Users/Gibson/adbpull/com.nossbigg.htmlminder/files/data/gib-tweet-fyp/#sickhillary"
 dataMunger = DM.DataMunger()
