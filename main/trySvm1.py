@@ -3,7 +3,7 @@ import itertools
 
 import pandas as pd
 import pymongo
-from controller import PreprocessingUtils as PPU
+from controller import preprocessing_utils as PPU
 from controller.MLUtils import MLUtils
 from controller.NLTKManager import NLTKManager as NLTKMgr
 from sklearn import preprocessing
