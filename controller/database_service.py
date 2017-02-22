@@ -15,7 +15,7 @@ class DatabaseService:
 
         return self.dbclient[db_name]
 
-    def get_collections_in_db(self, db_name=None):
+    def get_collection_names(self, db_name=None):
         if db_name is None:
             db_name = self.config.get_db_name()
 

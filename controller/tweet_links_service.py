@@ -18,7 +18,7 @@ class TweetLinksService:
         self.config = config_class
 
     def gen_all_collection_links(self, overwrite=False):
-        collection_names = self.database_service.get_collections_in_db()
+        collection_names = self.database_service.get_collection_names()
         existing_collections = get_tweet_collections_only(collection_names)
 
         collection_links_to_create = []
@@ -41,7 +41,7 @@ class TweetLinksService:
         collection_link_name = get_collection_links_name_from_collection_name(collection_name)
 
         # if collection link exists and overwrite is true, remove existing collection
-        if overwrite and collection_link_name in self.database_service.get_collections_in_db():
+        if overwrite and collection_link_name in self.database_service.get_collection_names():
             db[collection_link_name].drop()
 
         # get tweets and generate links data
