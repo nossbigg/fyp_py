@@ -1,7 +1,7 @@
 from nltk import TweetTokenizer, PorterStemmer, FreqDist
 from nltk.corpus import stopwords
 
-
+# TODO refactor: extract methods, remove class
 class NLTKManager():
   stopWordList = stopwords.words('english')
   tokenizer = TweetTokenizer(preserve_case=False,
