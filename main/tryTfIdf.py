@@ -5,7 +5,7 @@ import pandas as pd
 import pymongo
 from controller import preprocessing_utils as PPU
 from controller.MLUtils import MLUtils
-from controller.NLTKManager import NLTKManager as NLTKMgr
+from controller.nltk_manager import NLTKManager as NLTKMgr
 from controller.TextBlobUtils import TextBlobUtils as TBU
 from sklearn import preprocessing
 
