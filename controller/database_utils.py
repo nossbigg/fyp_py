@@ -9,6 +9,10 @@ def get_collection_links_name_from_collection_name(collection_name):
     return collection_name + COLLECTION_NAME_LINKS_SUFFIX
 
 
+def get_tweet_collections_only(collection_names):
+    return [name for name in collection_names if not is_links_collection(name)]
+
+
 def is_links_collection(collection_name):
     m = collection_name_links_pattern.match(collection_name)
     return m is not None

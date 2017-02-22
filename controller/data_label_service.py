@@ -1,4 +1,4 @@
-from controller.database_utils import is_links_collection
+from controller.database_utils import *
 from controller.sentiment_utils import *
 
 
@@ -14,8 +14,7 @@ class DataLabelService:
         db = self.dbclient.get_db()
 
         # get tweet collection names
-        collection_names = db.collection_names()
-        collection_names = [name for name in collection_names if not is_links_collection(name)]
+        collection_names = get_tweet_collections_only(db.collection_names())
 
         # iterate through all collections
         for collection_name in collection_names:
