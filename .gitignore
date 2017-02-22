@@ -9,6 +9,6 @@ out/
 /build
 /captures
 /.idea/misc.xml
-/main/datasets/*
+datasets/
 /main/d3viz/*
 /controller/*.pyc
