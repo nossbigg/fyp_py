@@ -9,8 +9,14 @@ class DatabaseService:
         self.config = config_class
         self.dbclient = pymongo.MongoClient()
 
-    def get_db(self, dbName=None):
-        if dbName == None:
-            dbName = self.config.get_db_name()
+    def get_db(self, db_name=None):
+        if db_name is None:
+            db_name = self.config.get_db_name()
 
-        return self.dbclient[dbName]
+        return self.dbclient[db_name]
+
+    def get_collections_in_db(self, db_name=None):
+        if db_name is None:
+            db_name = self.config.get_db_name()
+
+        return self.dbclient[db_name].collection_names()
