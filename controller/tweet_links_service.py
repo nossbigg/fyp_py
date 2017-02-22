@@ -45,7 +45,10 @@ class TweetLinksService:
             db[collection_link_name].drop()
 
         # get tweets and generate links data
-        tweets = list(db[collection_name].find({}))
+        cursor = db[collection_name].find(
+            {},
+            {"id": 1, "tweet_type": 1, "retweeted_status": 1})
+        tweets = list(cursor)
         tweets_dict = db_tweets_to_tweets_dict(tweets)
         links_dict = generate_links_dict(tweets_dict)
 
