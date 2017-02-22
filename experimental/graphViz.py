@@ -1,4 +1,4 @@
-import controller.GraphManager as GM
+import controller.graph_tweet_manager as GM
 import controller.graph_viz_utils as GV
 import networkx as nx
 import pymongo
@@ -21,8 +21,8 @@ tweetDict = TPU.TweetProcessingUtils.buildTweetDictFromList(tweetList)
 graphManager = GM.GraphManager(tweetDict)
 
 # test
-G = graphManager.graph
+G = graphManager.get_graph()
 degree_values = nx.degree(G).values()
 
 # generate graph degree histogram
-GV.gen_plt_degree_dist(graphManager.graph)
+GV.gen_plt_degree_dist(graphManager.get_graph())
