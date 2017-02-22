@@ -1,5 +1,5 @@
 import controller.GraphManager as GM
-import controller.GraphVizUtils as GV
+import controller.graph_viz_utils as GV
 import networkx as nx
 import pymongo
 
@@ -25,5 +25,4 @@ G = graphManager.graph
 degree_values = nx.degree(G).values()
 
 # generate graph degree histogram
-gv = GV.GraphVizUtils()
-gv.displayGraphDegreeDist(graphManager.graph)
+GV.gen_plt_degree_dist(graphManager.graph)
