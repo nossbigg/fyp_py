@@ -38,16 +38,16 @@ pdAll['original_tokens'] = text_tokens
 text_tokens = [PPU.PreprocessingUtils.removeTokenHTTP(tokens) for tokens in text_tokens]
 text_tokens = [PPU.PreprocessingUtils.removeTokenUserReference(tokens) for tokens in text_tokens]
 text_tokens = [PPU.PreprocessingUtils.removeTokenHashtag(tokens) for tokens in text_tokens]
-text_tokens = [nltkMgr.removeStopwordTokens(tokens) for tokens in text_tokens]
-text_tokens = [nltkMgr.lemmatizeTokens(tokens) for tokens in text_tokens]
+text_tokens = [nltkMgr.remove_stopword_tokens(tokens) for tokens in text_tokens]
+text_tokens = [nltkMgr.lemmatize_tokens(tokens) for tokens in text_tokens]
 text_tokens = [PPU.PreprocessingUtils.removeTokenByLength(tokens, 3, 999) for tokens in text_tokens]
 
 # gen global term frequencies
-totalFreq = nltkMgr.genFreqDist([item for sublist in text_tokens for item in sublist])
+totalFreq = nltkMgr.gen_freq_dist([item for sublist in text_tokens for item in sublist])
 termsSelected = PPU.PreprocessingUtils.getTermsWithinStdDev(totalFreq, 3, 3)
 
-tokens_vec = [nltkMgr.genFreqVector(tokens, termsSelected) for tokens in text_tokens]
-tokens_vec_bin = [nltkMgr.genFreqVector(tokens, termsSelected, True) for tokens in text_tokens]
+tokens_vec = [nltkMgr.gen_freq_vector(tokens, termsSelected) for tokens in text_tokens]
+tokens_vec_bin = [nltkMgr.gen_freq_vector(tokens, termsSelected, True) for tokens in text_tokens]
 
 # normalize tokens_vec
 minNum = 0
