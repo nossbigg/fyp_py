@@ -9,3 +9,5 @@ dis = DataImportService(dbs, config)
 # add archives into db (overwrite setting)
 dis.import_from_all_dir(True)
 # dis.import_from_all_dir()
+
+pass
