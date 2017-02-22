@@ -51,6 +51,8 @@ def get_tweets_from_archives(archives_json):
         for tweet in tweets_archive:
             tweet_id = tweet["id"]
             tweet["_id"] = tweet["id"]
+
+            # prevents duplicates
             if tweet_id not in tweets:
                 tweets[tweet_id] = tweet
     return tweets
