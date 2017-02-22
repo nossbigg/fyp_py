@@ -3,9 +3,9 @@ from TweetType import TweetType
 from afinn import Afinn
 from nltk.corpus import sentiwordnet as swn
 
-afinn_default = Afinn()
-tokenizer_default = nltk.TweetTokenizer(preserve_case=False,
-                                        reduce_len=False, strip_handles=False)
+__afinn_default = Afinn()
+__tokenizer_default = nltk.TweetTokenizer(preserve_case=False,
+                                          reduce_len=False, strip_handles=False)
 
 
 def get_tweet_type(tweet):
@@ -20,7 +20,7 @@ def get_tweet_type(tweet):
         return TweetType.NORMAL
 
 
-def get_scores_swn(text, tokenizer=tokenizer_default):
+def get_scores_swn(text, tokenizer=__tokenizer_default):
     tokens = tokenizer.tokenize(text)
 
     pos_scores = 0.0
@@ -45,4 +45,4 @@ def get_scores_swn(text, tokenizer=tokenizer_default):
 
 
 def get_score_afinn(text):
-    return afinn_default.score(text)
+    return __afinn_default.score(text)
