@@ -7,3 +7,5 @@ dbs = DatabaseService(config)
 dls = DataLabelService(dbs, config)
 
 dls.set_all_sentiments()
+
+pass
