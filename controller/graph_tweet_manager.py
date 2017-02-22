@@ -1,6 +1,4 @@
-import json
-
-import model.TweetType as TT
+import TweetType
 import networkx as nx
 
 
@@ -36,9 +34,9 @@ class GraphManager:
 
             tweet_type_enum = tweet['tweet_type']
 
-            if tweet_type_enum == TT.TweetType.RETWEET:
+            if tweet_type_enum == TweetType.RETWEET:
                 tweet_id_parent = tweet['retweeted_status']['id']
-            elif tweet_type_enum == TT.TweetType.QUOTE_RETWEET:
+            elif tweet_type_enum == TweetType.QUOTE_RETWEET:
                 tweet_id_parent = tweet['quoted_status_id']
 
             if tweet_id_parent != -1:
