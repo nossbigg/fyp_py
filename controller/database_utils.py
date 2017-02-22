@@ -13,6 +13,10 @@ def get_tweet_collections_only(collection_names):
     return [name for name in collection_names if not is_links_collection(name)]
 
 
+def get_tweet_collections_links_only(collection_names):
+    return [name for name in collection_names if is_links_collection(name)]
+
+
 def is_links_collection(collection_name):
     m = collection_name_links_pattern.match(collection_name)
     return m is not None
