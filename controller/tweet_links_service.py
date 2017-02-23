@@ -41,8 +41,11 @@ class TweetLinksService:
         collection_link_name = get_collection_links_name_from_collection_name(collection_name)
 
         # if collection link exists and overwrite is true, remove existing collection
-        if overwrite and collection_link_name in self.database_service.get_collection_names():
-            db[collection_link_name].drop()
+        if collection_link_name in self.database_service.get_collection_names():
+            if overwrite:
+                db[collection_link_name].drop()
+            else:
+                return
 
         # get tweets and generate links data
         cursor = db[collection_name].find(
