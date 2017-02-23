@@ -41,7 +41,15 @@ class DatabaseService:
 
         return tweet_collection_links_names
 
-    def get_unique_tweets_for_collection(self, collection_name, sorted_by_childs_length=False):
+    def get_unique_tweet_ids_for_collection(self, collection_name, sorted_by_childs_length=False):
+        """
+        Get unique tweet ids for a given collection
+        Allows sorting by tweet's number of child nodes (descending)
+
+        :param collection_name:
+        :param sorted_by_childs_length:
+        :return:
+        """
         collection_links_name = get_collection_links_name_from_collection_name(collection_name)
 
         query_filter = {"_id": 1, "represented_by_id": 1}
