@@ -61,9 +61,6 @@ def links_dict_to_mongo(links_dict):
     mongo_items = []
 
     for tweet_id, tl in links_dict.iteritems():
-        tl_dict = vars(tl)
-        tl_dict["_id"] = tl_dict["id"]
-        del tl_dict["id"]
-        mongo_items.append(tl_dict)
+        mongo_items.append(tl.to_mongo_item())
 
     return mongo_items
