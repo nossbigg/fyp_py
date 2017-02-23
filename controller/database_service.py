@@ -1,5 +1,6 @@
 import pymongo
-from controller.database_utils import get_collection_links_name_from_collection_name
+from controller.database_utils import get_collection_links_name_from_collection_name, get_tweet_collections_only, \
+    get_tweet_collections_links_only
 
 
 class DatabaseService:
@@ -27,6 +28,18 @@ class DatabaseService:
             db_name = self.config.get_db_name()
 
         return self.dbclient[db_name][collection_name]
+
+    def get_tweet_collections_names_only(self):
+        collection_names = self.get_collection_names()
+        tweet_collection_names = get_tweet_collections_only(collection_names)
+
+        return tweet_collection_names
+
+    def get_tweet_collections_links_names_only(self):
+        collection_names = self.get_collection_names()
+        tweet_collection_links_names = get_tweet_collections_links_only(collection_names)
+
+        return tweet_collection_links_names
 
     def get_unique_tweets_for_collection(self, collection_name, sorted_by_childs_length=False):
         collection_links_name = get_collection_links_name_from_collection_name(collection_name)
