@@ -17,3 +17,6 @@ class Config:
 
     def get_db_name(self):
         return self.config_var.get('DB-MONGO', 'DB_NAME')
+
+    def get_tweet_csv_label_dir(self):
+        return self.config_var.get('CORPUS', 'TWEET_CSV_LABEL_DIR')
