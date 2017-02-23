@@ -1,6 +1,8 @@
 from ConfigParser import ConfigParser
+from os.path import dirname, abspath
 
 DEFAULT_CONFIG_FILE_PATH = '../config/config.ini'
+ROOT_DIR = dirname(dirname(abspath(__file__)))
 
 
 class Config:
@@ -20,3 +22,6 @@ class Config:
 
     def get_tweet_csv_label_dir(self):
         return self.config_var.get('CORPUS', 'TWEET_CSV_LABEL_DIR')
+
+    def get_root_dir(self):
+        return ROOT_DIR
