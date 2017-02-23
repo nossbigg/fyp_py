@@ -56,8 +56,11 @@ class DataImportService:
         collection_name = get_collectionname_from_source_path(path)
 
         # if collection exists and overwrite is true, remove existing collection
-        if overwrite and collection_name in db.collection_names():
-            db[collection_name].drop()
+        if collection_name in db.collection_names():
+            if overwrite:
+                db[collection_name].drop()
+            else:
+                return
 
         # import gzip archives
         archives_json = []
