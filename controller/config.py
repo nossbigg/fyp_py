@@ -24,5 +24,5 @@ class Config:
         return self.config_var.get('CORPUS', 'TWEET_CSV_LABEL_DIR')
 
     @staticmethod
-    def get_root_dir(self):
+    def get_root_dir():
         return ROOT_DIR
