@@ -63,10 +63,8 @@ def get_tweets_from_archive(archive_json):
 
 
 def convert_tweets_date(tweets):
-    #FIXME replacing dict items in iteration is unstable
-    for id, tweet in tweets.iteritems():
+    for tweet_id, tweet in tweets.iteritems():
         tweet["created_at"] = tweet_date_to_mongodb_date(tweet["created_at"])
-        tweets[id] = tweet
     return tweets
 
 
