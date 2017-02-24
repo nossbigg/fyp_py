@@ -14,11 +14,12 @@ class Config:
 
         self.config_var = parser
 
-    def get_corpus_dir(self):
-        return self.config_var.get('CORPUS', 'CORPUS_DIR')
-
     def get_db_name(self):
         return self.config_var.get('DB-MONGO', 'DB_NAME')
+
+    # TODO add logic to handle relative/absolute path
+    def get_corpus_dir(self):
+        return self.config_var.get('CORPUS', 'CORPUS_DIR')
 
     def get_tweet_csv_label_dir(self):
         return self.config_var.get('CORPUS', 'TWEET_CSV_LABEL_DIR')
