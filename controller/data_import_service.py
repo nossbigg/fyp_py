@@ -75,7 +75,7 @@ class DataImportService:
         tweets = get_tweets_from_archives(archives_json)
 
         # convert date format to mongo-compatible
-        # tweets = convert_tweets_date(tweets)
+        tweets = convert_tweets_date(tweets)
 
         # store tweets
         db[collection_name].insert(list(tweets.values()))

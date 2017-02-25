@@ -1,7 +1,9 @@
+import datetime
 import glob
 import gzip
-import os
 import json
+import os
+import time
 
 
 def get_archives_from_path(path):
@@ -69,5 +71,6 @@ def convert_tweets_date(tweets):
 
 
 def tweet_date_to_mongodb_date(tweet_date):
-    return tweet_date
-    # TODO implement date conversion
+    py_date_struct = time.strptime(tweet_date, '%a %b %d %H:%M:%S +0000 %Y')
+    mongo_date_obj = datetime.datetime.fromtimestamp(time.mktime(py_date_struct), None)
+    return mongo_date_obj
