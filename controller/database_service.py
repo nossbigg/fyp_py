@@ -1,6 +1,6 @@
 import pymongo
 from controller.database_utils import get_collection_links_name_from_collection_name, get_tweet_collections_only, \
-    get_tweet_collections_links_only
+    get_tweet_collections_links_only, gen_unique_tweet_ids_from_links
 
 
 class DatabaseService:
@@ -60,14 +60,26 @@ class DatabaseService:
             {}, query_filter)
         tweet_links = list(cursor)
 
-        if sorted_by_childs_length:
-            tweet_links.sort(key=lambda tl: len(tl['childs']), reverse=True)
-
-        unique_tweet_list = []
-        for doc in tweet_links:
-            if doc['represented_by_id'] is None:
-                unique_tweet_list.append(doc['_id'])
-            else:
-                unique_tweet_list.append(doc['represented_by_id'])
+        unique_tweet_list = gen_unique_tweet_ids_from_links(tweet_links, sorted_by_childs_length)
 
         return unique_tweet_list
+
+    def get_unique_tweets_for_collection(self, collection_name, sorted_by_childs_length=False, filter_query=None):
+        """
+        Returns unique tweets for a given collection (ie. retrieves single representation per tweet)
+
+        :param collection_name:
+        :param sorted_by_childs_length:
+        :param filter_query:
+        :return:
+        """
+
+        unique_tweet_list = self.get_unique_tweet_ids_for_collection(collection_name, sorted_by_childs_length)
+
+        if filter_query is None:
+            filter_query = {"_id": 1, "text": 1}
+
+        cursor = self.get_db()[collection_name].find(
+            {"_id": {"$in": unique_tweet_list}}, filter_query)
+
+        return list(cursor)
