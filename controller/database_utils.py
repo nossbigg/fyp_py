@@ -28,3 +28,19 @@ def get_collectionname_from_source_path(path):
     dbname = re.sub('[^a-zA-Z0-9_]', '', dbname)
 
     return dbname
+
+
+def gen_unique_tweet_ids_from_links(tweet_links, sorted_by_childs_length=False):
+    if sorted_by_childs_length:
+        tweet_links.sort(key=lambda tl: len(tl['childs']), reverse=True)
+
+    unique_tweet_list = []
+    for doc in tweet_links:
+        if doc['represented_by_id'] is None:
+            unique_tweet_list.append(doc['_id'])
+        else:
+            unique_tweet_list.append(doc['represented_by_id'])
+
+    unique_tweet_list = [long(tweet_id) for tweet_id in unique_tweet_list]
+
+    return unique_tweet_list
