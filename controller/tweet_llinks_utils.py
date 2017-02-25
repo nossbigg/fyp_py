@@ -64,3 +64,8 @@ def links_dict_to_mongo(links_dict):
         mongo_items.append(tl.to_mongo_item())
 
     return mongo_items
+
+
+def gen_represented_by_reverse_lookup_dict(links):
+    return {l["represented_by_id"]: l["_id"] for l in links
+            if l["represented_by_id"] is not None}
