@@ -1,5 +1,5 @@
-import model.TweetType as TT
-import model.TweetSentimentLabel as TSL
+import model.tweet_type as TT
+import model.tweet_sentiment_label as TSL
 
 import pymongo
 

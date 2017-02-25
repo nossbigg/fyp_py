@@ -1,5 +1,5 @@
 import nltk
-from TweetType import TweetType
+from tweet_type import TweetType
 from afinn import Afinn
 from nltk.corpus import sentiwordnet as swn
 

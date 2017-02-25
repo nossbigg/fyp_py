@@ -1,4 +1,4 @@
-from TweetType import TweetType
+from tweet_type import TweetType
 from tweet_link import TweetLink
 
 

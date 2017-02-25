@@ -1,4 +1,4 @@
-import model.TweetType as TweetType
+import model.tweet_type as TweetType
 
 class TweetProcessingUtils:
   @staticmethod

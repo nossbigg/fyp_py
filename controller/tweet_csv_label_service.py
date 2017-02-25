@@ -3,7 +3,7 @@ import glob
 import os
 
 import re
-from TweetSentimentLabel import TweetSentimentLabel
+from tweet_sentiment_label import TweetSentimentLabel
 from controller.tweet_db_utils import db_tweets_to_tweets_dict
 
 CSV_LABEL_FILE_DELIMITER = '|'

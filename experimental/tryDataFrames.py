@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import model.TweetSentimentLabel as TSL
+import model.tweet_sentiment_label as TSL
 import pymongo
 import pytz
 import pandas as pd
