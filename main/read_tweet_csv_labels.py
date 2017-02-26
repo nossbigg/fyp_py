@@ -6,4 +6,4 @@ config = Config()
 dbs = DatabaseService(config)
 
 tcls = TweetCSVLabelService(dbs, config)
-tcls.import_csv_label_docs()
+tcls.import_csv_label_docs(True)
