@@ -66,6 +66,37 @@ def links_dict_to_mongo(links_dict):
     return mongo_items
 
 
+def gen_peer_tweet_ids(tweet_id, tweet_links_dict, retweet_reverse_lookup_list=None):
+    """
+    Generate a list of tweet ids to update, given an tweet_id.
+    Scenario A: If tweet is parent, update all childs
+    Scenario B: If tweet has peers, also update peers
+
+    :return:
+    """
+    if retweet_reverse_lookup_list is None:
+        retweet_reverse_lookup_list = gen_represented_by_reverse_lookup_dict(tweet_links_dict)
+
+    ids_to_update = []
+    lookup_id = None
+
+    # Scenario A
+    if tweet_id in tweet_links_dict:
+        lookup_id = tweet_id
+    # Scenario B
+    elif tweet_id in retweet_reverse_lookup_list:
+        lookup_id = retweet_reverse_lookup_list[tweet_id]
+
+    childs = tweet_links_dict[lookup_id]["childs"]
+    ids_to_update += childs
+
+    return ids_to_update
+
+
+def gen_tweet_links_dict(tweet_links_list):
+    return {l["_id"]: l for l in tweet_links_list}
+
+
 def gen_represented_by_reverse_lookup_dict(links):
     return {l["represented_by_id"]: l["_id"] for l in links
             if l["represented_by_id"] is not None}
