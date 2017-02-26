@@ -70,7 +70,8 @@ def gen_peer_tweet_ids(tweet_id, tweet_links_dict, retweet_reverse_lookup_list=N
     """
     Generate a list of tweet ids to update, given an tweet_id.
     Scenario A: If tweet is parent, update all childs
-    Scenario B: If tweet has peers, also update peers
+    Scenario B: If tweet represents as parent, update all peers
+    Scenario C: If tweet is one of peers, update parent and other peers (Unimplemented)
 
     :return:
     """
@@ -87,8 +88,9 @@ def gen_peer_tweet_ids(tweet_id, tweet_links_dict, retweet_reverse_lookup_list=N
     elif tweet_id in retweet_reverse_lookup_list:
         lookup_id = retweet_reverse_lookup_list[tweet_id]
 
-    childs = tweet_links_dict[lookup_id]["childs"]
-    ids_to_update += childs
+    if lookup_id is not None:
+        childs = tweet_links_dict[lookup_id]["childs"]
+        ids_to_update += childs
 
     return ids_to_update
 
