@@ -3,6 +3,10 @@ import glob
 import os
 
 import re
+
+from controller.database_utils import get_collection_links_name_from_collection_name
+from controller.tweet_llinks_utils import gen_represented_by_reverse_lookup_dict, gen_peer_tweet_ids
+from controller.tweet_llinks_utils import gen_tweet_links_dict
 from tweet_sentiment_label import TweetSentimentLabel
 from controller.tweet_db_utils import db_tweets_to_tweets_dict
 
@@ -90,7 +94,13 @@ class TweetCSVLabelService:
         if collection_name not in self.database_service.get_collection_names():
             return
 
-        collection_obj = self.database_service.get_collection(collection_name)
+        collection = self.database_service.get_collection(collection_name)
+
+        # get links information
+        collection_link_name = get_collection_links_name_from_collection_name(collection_name)
+        cursor = self.database_service.get_collection(collection_link_name).find({})
+        tweet_links_dict = gen_tweet_links_dict(list(cursor))
+        retweet_reverse_lookup_list = gen_represented_by_reverse_lookup_dict(tweet_links_dict.values())
 
         with open(csv_filepath, 'rb') as csv_file:
             is_first_row = True
@@ -102,9 +112,11 @@ class TweetCSVLabelService:
                     is_first_row = False
                     continue
 
-                self.__import_csv_label_entry(line, collection_obj, overwrite)
+                self.__import_csv_label_entry(line, collection, tweet_links_dict, retweet_reverse_lookup_list,
+                                              overwrite)
 
-    def __import_csv_label_entry(self, csv_line, collection_obj, overwrite=False):
+    def __import_csv_label_entry(self, csv_line, collection, tweet_links_dict, retweet_reverse_lookup_list,
+                                 overwrite=False):
         # form csv label entry data structure
         entry = {}
         row_data = csv_line.split(CSV_LABEL_FILE_DELIMITER)
@@ -124,17 +136,22 @@ class TweetCSVLabelService:
             return
 
         # skip if has existing labelled tweet
+        tweet_id = entry['_id']
         if not overwrite:
-            matching_records_num = collection_obj.count(
-                {"_id": entry['_id'],
+            matching_records_num = collection.count(
+                {"_id": tweet_id,
                  "tweet_sentiment_label": {"$ne": None}})
             if matching_records_num > 0:
                 return
 
+        # update peers/childs also
+        ids_to_update = [tweet_id] + gen_peer_tweet_ids(tweet_id, tweet_links_dict, retweet_reverse_lookup_list)
+
         # label tweet
-        collection_obj.update(
-            {"_id": entry['_id']},
-            {'$set': {"tweet_sentiment_label": entry['tweet_sentiment_label']}})
+        collection.update(
+            {"_id": {"$in": ids_to_update}},
+            {'$set': {"tweet_sentiment_label": entry['tweet_sentiment_label']}},
+            multi=True)
 
     @staticmethod
     def gen_csv_label_filepath(root_dir, collection_name):
@@ -143,8 +160,11 @@ class TweetCSVLabelService:
     @staticmethod
     def get_collection_name_from_csv_filepath(csv_filepath):
         filename_w_extension = os.path.basename(csv_filepath)
-        filename = os.path.splitext(filename_w_extension)[0]
-        return filename
+        collection_name = os.path.splitext(filename_w_extension)[0]
+
+        collection_name = re.sub("\([a-zA-Z0-9]*?\)$", "", collection_name)
+
+        return collection_name
 
     @staticmethod
     def get_tweet_csv_label_format():
