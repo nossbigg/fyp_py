@@ -1,7 +1,7 @@
 from controller.database_utils import get_tweet_collections_links_only, get_collection_links_name_from_collection_name, \
     get_tweet_collections_only
-from controller.tweet_llinks_utils import generate_links_dict
-from controller.tweet_llinks_utils import links_dict_to_mongo
+from controller.tweet_links_utils import generate_links_dict
+from controller.tweet_links_utils import links_dict_to_mongo
 from controller.tweet_db_utils import db_tweets_to_tweets_dict
 
 

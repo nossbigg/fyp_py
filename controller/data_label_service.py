@@ -2,7 +2,7 @@ import nltk
 from afinn import Afinn
 from controller.database_utils import *
 from controller.sentiment_utils import *
-from controller.tweet_llinks_utils import gen_represented_by_reverse_lookup_dict, gen_peer_tweet_ids, \
+from controller.tweet_links_utils import gen_represented_by_reverse_lookup_dict, gen_peer_tweet_ids, \
     gen_tweet_links_dict
 
 

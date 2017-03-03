@@ -5,8 +5,8 @@ import os
 import re
 
 from controller.database_utils import get_collection_links_name_from_collection_name
-from controller.tweet_llinks_utils import gen_represented_by_reverse_lookup_dict, gen_peer_tweet_ids
-from controller.tweet_llinks_utils import gen_tweet_links_dict
+from controller.tweet_links_utils import gen_represented_by_reverse_lookup_dict, gen_peer_tweet_ids
+from controller.tweet_links_utils import gen_tweet_links_dict
 from tweet_sentiment_label import TweetSentimentLabel
 from controller.tweet_db_utils import db_tweets_to_tweets_dict
 
