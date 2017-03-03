@@ -24,6 +24,9 @@ class Config:
     def get_tweet_csv_label_dir(self):
         return self.config_var.get('CORPUS', 'TWEET_CSV_LABEL_DIR')
 
+    def get_nps_tag_convert_filepath(self):
+        return self.config_var.get('CORPUS', 'NPS_TAG_CONVERT_PATH')
+
     @staticmethod
     def get_root_dir():
         return ROOT_DIR
