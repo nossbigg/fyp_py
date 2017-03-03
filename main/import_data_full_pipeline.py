@@ -10,7 +10,7 @@ dbs = DatabaseService(config)
 
 # Import data into db
 dis = DataImportService(dbs, config)
-dis.import_from_all_dir(True)
+dis.import_from_all_dir(overwrite=False)
 
 # Label tweet type
 dls = DataLabelService(dbs, config)
