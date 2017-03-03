@@ -1,3 +1,5 @@
+import nltk
+from afinn import Afinn
 from controller.database_utils import *
 from controller.sentiment_utils import *
 from controller.tweet_llinks_utils import gen_represented_by_reverse_lookup_dict, gen_peer_tweet_ids, \
@@ -8,9 +10,28 @@ class DataLabelService:
     config = None
     dbclient = None
 
+    __nps_corpus_retrieved = None
+    __pos_tagger_nps = None
+    __afinn_default = None
+    __tokenizer_default = None
+    __nps_tag_convert_dict = None
+
     def __init__(self, database_service_class, config_class):
         self.dbclient = database_service_class
         self.config = config_class
+
+        # Initialize nps tagger
+        self.__nps_corpus_retrieved = get_nltk_nps_corpus()
+        self.__pos_tagger_nps = nltk.UnigramTagger(self.__nps_corpus_retrieved)
+        self.__nps_tag_convert_dict = get_nps_tag_convert_dict(
+            self.config.get_root_dir() + self.config.get_nps_tag_convert_filepath())
+
+        # Initialize afinn
+        self.__afinn_default = Afinn()
+
+        # Initialize tokenizer
+        self.__tokenizer_default = nltk.TweetTokenizer(preserve_case=False,
+                                                       reduce_len=False, strip_handles=False)
 
     def set_all_sentiments(self):
         db = self.dbclient.get_db()
@@ -43,23 +64,39 @@ class DataLabelService:
             {"_id": {"$in": unique_tweet_list}},
             {"_id": 1, "text": 1, 'tweet_type': 1})
 
+        # set normalize variable
+        normalize_features = False
+
         for tweet in cursor:
             tweet_id = tweet['_id']
             tweet_text = tweet['text']
 
-            score_afinn = get_score_afinn(tweet_text)
-            score_pos, score_neg, score_obj = get_scores_swn(tweet_text)
+            # TODO might consider preprocessing text before scoring text
+            text_tokens = self.__tokenizer_default.tokenize(tweet_text)
+
+            # afinn
+            score_afinn = get_score_afinn(tweet_text, self.__afinn_default)
+            # swn
+            score_pos, score_neg, score_obj = get_scores_swn(text_tokens, normalize=normalize_features)
+            # nltk pos
+            pos_dict = get_pos_tags(text_tokens, self.__pos_tagger_nps, self.__nps_tag_convert_dict,
+                                    normalize=normalize_features)
+            pos_dict_mongo = pos_tags_universal_to_mongo_dict(pos_dict)
+
+            # build sentiments dict
+            sentiments_dict = {
+                "tweet_score_afinn": score_afinn,
+                "tweet_score_swn_pos": score_pos,
+                "tweet_score_swn_neg": score_neg,
+                "tweet_score_swn_obj": score_obj
+            }
+            sentiments_dict.update(pos_dict_mongo)
 
             ids_to_update = [tweet_id] + gen_peer_tweet_ids(tweet_id, tweet_links_dict, retweet_reverse_lookup_list)
 
             collection.update(
                 {"_id": {"$in": ids_to_update}},
-                {'$set': {
-                    "tweet_score_afinn": score_afinn,
-                    "tweet_score_swn_pos": score_pos,
-                    "tweet_score_swn_neg": score_neg,
-                    "tweet_score_swn_obj": score_obj
-                }},
+                {'$set': sentiments_dict},
                 multi=True)
 
     def set_all_tweets_type(self):
