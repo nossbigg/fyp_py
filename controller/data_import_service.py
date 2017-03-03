@@ -45,6 +45,9 @@ class DataImportService:
         for path in import_dirs:
             self.import_from_dir(path, overwrite)
 
+        # return imported sources
+        return import_dirs
+
     def import_from_dir(self, path, overwrite=False):
         """
 
