@@ -27,3 +27,7 @@ def get_swn_score_labels():
 
 def get_pos_tags_labels():
     return POS_TAG_UNIVERSAL_DICT.keys()
+
+
+def get_all_sentiment_labels():
+    return [get_score_afinn_label()] + get_swn_score_labels() + get_pos_tags_labels()
