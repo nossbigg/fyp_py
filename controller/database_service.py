@@ -64,7 +64,8 @@ class DatabaseService:
 
         return unique_tweet_list
 
-    def get_unique_tweets_for_collection(self, collection_name, sorted_by_childs_length=False, filter_query=None):
+    def get_unique_tweets_for_collection(self, collection_name, sorted_by_childs_length=False, filter_query=None,
+                                         search_query=None):
         """
         Returns unique tweets for a given collection (ie. retrieves single representation per tweet)
 
@@ -76,10 +77,15 @@ class DatabaseService:
 
         unique_tweet_list = self.get_unique_tweet_ids_for_collection(collection_name, sorted_by_childs_length)
 
-        if filter_query is None:
-            filter_query = {"_id": 1, "text": 1}
+        internal_search_query = {"_id": {"$in": unique_tweet_list}}
+        if search_query is not None:
+            internal_search_query.update(search_query)
+
+        internal_filter_query = {"_id": 1, "text": 1}
+        if filter_query is not None:
+            internal_filter_query.update(filter_query)
 
         cursor = self.get_db()[collection_name].find(
-            {"_id": {"$in": unique_tweet_list}}, filter_query)
+            internal_search_query, internal_filter_query)
 
         return list(cursor)

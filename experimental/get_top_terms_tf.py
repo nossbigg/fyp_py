@@ -15,7 +15,7 @@ for collection_name in collection_names:
     filter_query = {"_id": 1, "text": 1, "tweet_sentiment_label": 1,
                     "tweet_score_afinn": 1, "tweet_score_swn_pos": 1,
                     "tweet_score_swn_neg": 1, "tweet_score_swn_obj": 1}
-    tweets = dbs.get_unique_tweets_for_collection(collection_name, False, filter_query)
+    tweets = dbs.get_unique_tweets_for_collection(collection_name, sorted_by_childs_length=False, filter_query=filter_query)
 
     pdAll = pd.DataFrame(tweets)
 
