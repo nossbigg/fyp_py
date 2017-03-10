@@ -140,7 +140,7 @@ class TweetCSVLabelService:
         if not overwrite:
             matching_records_num = collection.count(
                 {"_id": tweet_id,
-                 "tweet_sentiment_label": {"$ne": None}})
+                 "tweet_sentiment_label": {"$exists": True}})
             if matching_records_num > 0:
                 return
 
