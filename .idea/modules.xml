@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/nossbigg-fyp-py.iml" filepath="$PROJECT_DIR$/nossbigg-fyp-py.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nossbigg_fyp_py.iml" filepath="$PROJECT_DIR$/nossbigg_fyp_py.iml" />
     </modules>
   </component>
 </project>
