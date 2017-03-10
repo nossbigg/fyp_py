@@ -1,6 +1,7 @@
 class MLFeatureObj:
     feature_name = ""
     feature_data = None
+    gen_feature_method = None
 
     # accepts a list of MLIterationObj
     test_iterations = {}
@@ -9,9 +10,9 @@ class MLFeatureObj:
     classifier_stats = {}
     best_classifiers = []
 
-    def __init__(self, feature_name, feature_data):
+    def __init__(self, feature_name, gen_feature_method):
         self.feature_name = feature_name
-        self.feature_data = feature_data
+        self.gen_feature_method = gen_feature_method
         self.test_iterations = {}
 
         self.best_classifiers = []
@@ -24,4 +25,3 @@ class MLFeatureObj:
         self.feature_data = None
         for v in self.test_iterations.values():
             v.deallocate_data()
-

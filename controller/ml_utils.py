@@ -1,11 +1,9 @@
+import math
+import operator
 import random
 
-import math
-
-import operator
 import pandas as pd
 from controller import preprocessing_utils as PPU
-from controller.TextBlobUtils import TextBlobUtils as TBU
 from controller.data_label_utils import SCORE_AFINN_LABEL, SCORE_SWN_LABELS, POS_TAG_UNIVERSAL_DICT
 from controller.nltk_manager import NLTKManager as NLTKMgr
 from ml_classifier_obj import MLClassifierObj
@@ -68,7 +66,7 @@ class MLUtils:
             "DT": MLUtils.clfDT,
             "LR": MLUtils.clfLR,
             "NBBernoulli": MLUtils.clfNBBernoulli,
-            "NBMulti": MLUtils.clfNBMultinomial,
+            # "NBMulti": MLUtils.clfNBMultinomial,
             "RFR": MLUtils.clfRFR,
             "GRB": MLUtils.clfGRB,
             "NN": MLUtils.clfNN
@@ -80,49 +78,82 @@ class MLUtils:
 
     # Feature functions
     @staticmethod
-    def gen_feature_afinn_swn(df):
-        return_vec = []
-        for index, row in df.iterrows():
-            temp_vec = [row[SCORE_AFINN_LABEL]] + row[SCORE_SWN_LABELS].tolist()
-            return_vec.append(temp_vec)
+    def gen_feature_afinn_swn(train, test):
+        return_vecs = []
 
-        return return_vec
+        datasets = [train, test]
+        for df in datasets:
+            df_temp_vec = []
+            for index, row in df.iterrows():
+                normalization_factor = len(row['text'])
+
+                score_afinn = [row[SCORE_AFINN_LABEL] / normalization_factor]
+
+                score_swn_labels = row[SCORE_SWN_LABELS].tolist()
+                score_swn_labels = [float(v) / normalization_factor for v in score_swn_labels]
+
+                temp_vec = score_afinn + score_swn_labels
+                df_temp_vec.append(temp_vec)
+            return_vecs.append(df_temp_vec)
+
+        return return_vecs
 
     @staticmethod
-    def gen_feature_pos(df):
-        return_vec = []
-        for index, row in df.iterrows():
-            temp_vec = []
-            for label in POS_TAG_UNIVERSAL_DICT.keys():
-                temp_vec.append(row[label])
+    def gen_feature_pos(train, test):
+        return_vecs = []
 
-            return_vec.append(temp_vec)
+        datasets = [train, test]
+        for df in datasets:
+            df_temp_vec = []
+            for index, row in df.iterrows():
+                normalization_factor = len(row['text'])
 
-        return return_vec
+                temp_vec = []
+                for label in POS_TAG_UNIVERSAL_DICT.keys():
+                    temp_vec.append(row[label])
+
+                temp_vec = [float(v) / normalization_factor for v in temp_vec]
+
+                df_temp_vec.append(temp_vec)
+            return_vecs.append(df_temp_vec)
+
+        return return_vecs
 
     @staticmethod
-    def gen_feature_term_tfidf(df):
-        return_vec = []
-
+    def gen_feature_term_tfidf(train, test):
         nltkMgr = NLTKMgr()
-        text_tokens = [nltkMgr.tokenize(text) for text in df['text']]
 
-        # text preprocessing
-        text_tokens = [PPU.PreprocessingUtils.removeTokenHTTP(tokens) for tokens in text_tokens]
-        text_tokens = [PPU.PreprocessingUtils.removeTokenUserReference(tokens) for tokens in text_tokens]
-        text_tokens = [PPU.PreprocessingUtils.removeTokenHashtag(tokens) for tokens in text_tokens]
-        text_tokens = [nltkMgr.remove_stopword_tokens(tokens) for tokens in text_tokens]
-        text_tokens = [nltkMgr.lemmatize_tokens(tokens) for tokens in text_tokens]
-        text_tokens = [PPU.PreprocessingUtils.removeTokenByLength(tokens, 3, 999) for tokens in text_tokens]
+        datasets = [train, test]
+        text_tokens_datasets = []
+
+        for df in datasets:
+            text_tokens = [nltkMgr.tokenize(text) for text in df['text']]
+
+            text_tokens = [PPU.PreprocessingUtils.removeTokenHTTP(tokens) for tokens in text_tokens]
+            text_tokens = [PPU.PreprocessingUtils.removeTokenUserReference(tokens) for tokens in text_tokens]
+            text_tokens = [PPU.PreprocessingUtils.removeTokenHashtag(tokens) for tokens in text_tokens]
+            text_tokens = [nltkMgr.remove_stopword_tokens(tokens) for tokens in text_tokens]
+            text_tokens = [nltkMgr.lemmatize_tokens(tokens) for tokens in text_tokens]
+            text_tokens = [PPU.PreprocessingUtils.removeTokenByLength(tokens, 3, 999) for tokens in text_tokens]
+
+            text_tokens_sentences = [PPU.PreprocessingUtils.tokensToWord(tokens) for tokens in text_tokens]
+
+            text_tokens_datasets.append(text_tokens_sentences)
 
         # tf-idf
         tfidf_v = TfidfVectorizer(max_features=100)
-        x_train = tfidf_v.fit_transform([PPU.PreprocessingUtils.tokensToWord(tokens) for tokens in text_tokens])
+
+        x_train_data = text_tokens_datasets[0]
+        x_test_data = text_tokens_datasets[1]
+
+        x_train = tfidf_v.fit_transform(x_train_data)
+        x_test = tfidf_v.transform(x_test_data)
 
         # format to correct data format for pd
         x_train = x_train.toarray().tolist()
+        x_test = x_test.toarray().tolist()
 
-        return x_train
+        return x_train, x_test
 
     # Train functions
     @staticmethod
@@ -159,16 +190,18 @@ class MLUtils:
         return acc_list_total
 
     @staticmethod
-    def gen_train_suite(collection_name, df, target_label, source_label_list, n_iterations, classifier_dict,
+    def gen_train_suite(collection_name, df, target_label, source_label_dict, n_iterations, classifier_dict,
                         test_ratio=0.2):
         # Collection level
         ml_col_obj = MLCollectionObj(collection_name=collection_name, dataset=df)
 
         # Features
-        features_tested = {f: MLFeatureObj(f, df[f]) for f in source_label_list}
+        features_tested = {k: MLFeatureObj(k, v) for k, v in source_label_dict.iteritems()}
         ml_col_obj.features_tested = features_tested
 
-        for feature_label, v in features_tested.iteritems():
+        for feature_label, ml_feature_obj in features_tested.iteritems():
+            gen_feature_method = ml_feature_obj.gen_feature_method
+
             test_iterations = {}
             features_tested[feature_label].test_iterations = test_iterations
 
@@ -176,9 +209,11 @@ class MLUtils:
             for n in range(1, n_iterations + 1):
                 # split data
                 train, test = train_test_split(df, test_size=test_ratio)
-                train_feature = pd.np.array(train[feature_label].tolist())
+
+                train_feature, test_feature = gen_feature_method(train, test)
+                # train_feature = pd.np.array(train[feature_label].tolist())
+                # test_feature = pd.np.array(test[feature_label].tolist())
                 train_label = pd.np.array(train[target_label].tolist())
-                test_feature = pd.np.array(test[feature_label].tolist())
                 test_label = pd.np.array(test[target_label].tolist())
 
                 ml_iter_obj = MLIterationObj(train_feature, train_label, test_feature, test_label)
