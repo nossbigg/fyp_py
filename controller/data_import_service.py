@@ -8,7 +8,7 @@ class DataImportService:
     """
 
     config = None
-    dbclient = None
+    dbs = None
 
     def __init__(self, database_service_class, config_class):
         """
@@ -16,7 +16,7 @@ class DataImportService:
 
         :param config_class: Accepts a ConfigParser object.
         """
-        self.dbclient = database_service_class
+        self.dbs = database_service_class
         self.config = config_class
 
     def import_from_all_dir(self, overwrite=False):
@@ -25,7 +25,7 @@ class DataImportService:
         :param overwrite:
         :return:
         """
-        db = self.dbclient.get_db()
+        db = self.dbs.get_db()
         CORPUS_DIR = self.config.get_corpus_dir()
 
         # list available sources
@@ -55,7 +55,7 @@ class DataImportService:
         :param overwrite:
         :return:
         """
-        db = self.dbclient.get_db()
+        db = self.dbs.get_db()
         collection_name = get_collectionname_from_source_path(path)
 
         # if collection exists and overwrite is true, remove existing collection

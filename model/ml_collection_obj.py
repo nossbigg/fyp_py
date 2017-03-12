@@ -1,4 +1,8 @@
+import datetime
+
+
 class MLCollectionObj:
+    timestamp = ""
     collection_name = ""
 
     # accepts a dataframe
@@ -14,6 +18,7 @@ class MLCollectionObj:
         self.collection_name = collection_name
         self.dataset = dataset
         self.features_tested = {}
+        self.timestamp = datetime.datetime.now().isoformat()
 
     def get_features_tested_names(self):
         return [f.feature_name for f in self.features_tested.values()]

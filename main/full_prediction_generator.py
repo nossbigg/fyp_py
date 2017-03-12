@@ -8,12 +8,12 @@ config = Config()
 dbs = DatabaseService(config)
 
 # get databases
-collection_names = ['sickhillary']
+# collection_names = ['sickhillary']
 # collection_names = ['sickhillary', 'mosul_battle', 'trump_cabinet', 'us_economic_policy', 'death_hoax']
-# collection_names = ['sickhillary', 'mosul_battle', 'trump_cabinet', 'death_hoax']
+collection_names = ['sickhillary', 'mosul_battle', 'trump_cabinet', 'death_hoax']
 
 # declare test parameters
-n_iterations_per_classifier = 100
+n_iterations_per_classifier = 20
 test_ratio = 0.2
 target_label = "tweet_sentiment_label"
 classifier_dict = MLUtils.get_classifiers_standard_suite()
@@ -57,4 +57,5 @@ for collection_name in collection_names:
     # add to result
     ml_collections_result[collection_name] = ml_col_obj
 
-pass
+MLUtils.persist_ml_test_result(config.get_ml_test_results_dir(),
+                               ml_collections_result)

@@ -1,16 +1,20 @@
+import json
 import math
 import operator
 import random
 
+import datetime
+
+import jsonpickle
 import pandas as pd
 from controller import preprocessing_utils as PPU
 from controller.data_label_utils import SCORE_AFINN_LABEL, SCORE_SWN_LABELS, POS_TAG_UNIVERSAL_DICT
 from controller.nltk_manager import NLTKManager as NLTKMgr
-from ml_classifier_obj import MLClassifierObj
-from ml_classifier_stats import MLClassifierStats
-from ml_collection_obj import MLCollectionObj
-from ml_feature_obj import MLFeatureObj
-from ml_iteration_obj import MLIterationObj
+from model.ml_classifier_obj import MLClassifierObj
+from model.ml_classifier_stats import MLClassifierStats
+from model.ml_collection_obj import MLCollectionObj
+from model.ml_feature_obj import MLFeatureObj
+from model.ml_iteration_obj import MLIterationObj
 from sklearn import svm, tree, linear_model, naive_bayes, ensemble, neural_network
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score
@@ -299,3 +303,15 @@ class MLUtils:
         sorted_feature_scores = sorted(feature_scores.items(), key=operator.itemgetter(1))
         sorted_feature_scores.reverse()
         ml_collection_obj.best_feature.append(sorted_feature_scores[0][0])
+
+    @staticmethod
+    def persist_ml_test_result(path, data, filename=None):
+        if filename is None:
+            filename = MLUtils.get_timestamp_for_ml_test()
+        full_path = path + "\\" + filename + ".json"
+        with open(full_path, 'wb') as outfile:
+            outfile.write(jsonpickle.encode(data))
+
+    @staticmethod
+    def get_timestamp_for_ml_test():
+        return datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
