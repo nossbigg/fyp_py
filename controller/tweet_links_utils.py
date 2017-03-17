@@ -1,5 +1,5 @@
-from tweet_type import TweetType
-from tweet_link import TweetLink
+from model.tweet_type import TweetType
+from model.tweet_link import TweetLink
 
 
 def generate_links_dict(tweets_dict):
