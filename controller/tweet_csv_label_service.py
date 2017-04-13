@@ -153,6 +153,50 @@ class TweetCSVLabelService:
             {'$set': {"tweet_sentiment_label": entry['tweet_sentiment_label']}},
             multi=True)
 
+    def export_csv_label_doc(self, collection_name):
+        root_csv_dir = self.config.get_root_dir() + self.config.get_tweet_csv_label_dir()
+        csv_label_doc_filepath = \
+            self.gen_csv_label_filepath(root_csv_dir, collection_name + " exported")
+
+        # get unique tweets by largest number of childs
+        unique_tweet_ids = self.database_service.get_unique_tweet_ids_for_collection(collection_name, True)
+
+        # export labelled tweets only
+        find_criteria = {"_id": {"$in": unique_tweet_ids},
+                         "tweet_sentiment_label": {"$exists": True}}
+
+        cursor = self.database_service.get_collection(collection_name).find(
+            find_criteria
+                      )
+        tweets = list(cursor)
+
+        # generate headers
+        tweet_headers = sorted(tweets[0].keys())
+        tweet_headers = [k.encode('utf-8') for k in tweet_headers]
+
+        # write csv
+        with open(csv_label_doc_filepath, 'wb') as csv_file:
+            writer = csv.writer(csv_file, delimiter=CSV_LABEL_FILE_DELIMITER)
+            writer.writerow(tweet_headers)
+
+            for tweet in tweets:
+                # convert all text fields to utf-8
+                for key, value in tweet.iteritems():
+                    if isinstance(value, basestring):
+                        tweet[key] = value.encode('utf-8').strip()
+
+                tweet['text'] = re.sub("[\n" + CSV_LABEL_FILE_DELIMITER + "]", "", tweet['text'])
+
+                # to export
+                d = []
+                for k in tweet_headers:
+                    if k in tweet:
+                        d.append(tweet[k])
+                    else:
+                        d.append(None)
+
+                writer.writerow(d)
+
     @staticmethod
     def gen_csv_label_filepath(root_dir, collection_name):
         return root_dir + "\\" + collection_name + ".csv"
