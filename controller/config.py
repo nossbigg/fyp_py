@@ -35,6 +35,10 @@ class Config:
         path = self.config_var.get('ML-TEST', 'ML_TEST_RESULTS_DIR')
         return self.__convert_to_abs_path(path)
 
+    def get_excel_exports_dir(self):
+        path = self.config_var.get('EXCEL-EXPORT', 'EXCEL_EXPORT_DIR')
+        return self.__convert_to_abs_path(path)
+
     @staticmethod
     def __convert_to_abs_path(path):
         if not os.path.isabs(path):
