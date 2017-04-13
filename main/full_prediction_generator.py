@@ -8,15 +8,19 @@ config = Config()
 dbs = DatabaseService(config)
 
 # get databases
-# collection_names = ['sickhillary']
-# collection_names = ['sickhillary', 'mosul_battle', 'trump_cabinet', 'us_economic_policy', 'death_hoax']
-collection_names = ['sickhillary', 'mosul_battle', 'trump_cabinet', 'death_hoax']
+collection_names = ['sickhillary', 'trump_cabinet', 'us_economic_policy',
+                    'mosul_battle', 'baghdadi_dead', 'death_hoax']
+collection_names = ['sickhillary']
 
 # declare test parameters
-n_iterations_per_classifier = 20
+description = "full prediction generator"
+n_iterations_per_classifier = 1
 test_ratio = 0.2
 target_label = "tweet_sentiment_label"
 classifier_dict = MLUtils.get_classifiers_standard_suite()
+features_tested_dict = {'feature_nlp_afinn_swn': MLUtils.gen_feature_afinn_swn,
+                        'feature_nlp_pos': MLUtils.gen_feature_pos,
+                        'feature_term_tfidf': MLUtils.gen_feature_term_tfidf}
 
 ml_collections_result = {}
 
@@ -30,12 +34,6 @@ for collection_name in collection_names:
     tweets = dbs.get_unique_tweets_for_collection(collection_name, filter_query=mongo_filter_query,
                                                   search_query=mongo_search_query)
     df = pd.DataFrame(tweets)
-
-    print("Generating features...")
-    # generate features
-    features_tested_dict = {'feature_nlp_afinn_swn': MLUtils.gen_feature_afinn_swn,
-                            'feature_nlp_pos': MLUtils.gen_feature_pos,
-                            'feature_term_tfidf': MLUtils.gen_feature_term_tfidf}
 
     print("Building train suite...")
     # build train suite
@@ -57,5 +55,7 @@ for collection_name in collection_names:
     # add to result
     ml_collections_result[collection_name] = ml_col_obj
 
+print("Saving test results...")
+ml_collections_result_json = {k: v.get_json() for k, v in ml_collections_result.iteritems()}
 MLUtils.persist_ml_test_result(config.get_ml_test_results_dir(),
-                               ml_collections_result)
+                               ml_collections_result_json, file_suffix=description)
