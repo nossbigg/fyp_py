@@ -37,3 +37,24 @@ class MLClassifierStats:
         self.std_dev = np.std(target_list)
         self.percentile_25 = np.percentile(target_list, 25)
         self.percentile_75 = np.percentile(target_list, 75)
+
+    def get_json(self):
+        d = {
+            "classifier_label": self.classifier_label,
+            "scores_accuracy": self.scores_accuracy,
+            "scores_precision": self.scores_precision,
+            "scores_recall": self.scores_recall,
+            "scores_f1": self.scores_f1,
+
+            "min": self.min,
+            "max": self.max,
+            "mean": self.mean,
+            "median": self.median,
+            "std_dev": self.std_dev,
+            "percentile_25": self.percentile_25,
+            "percentile_75": self.percentile_75,
+
+            "overall_score": self.overall_score
+        }
+
+        return d

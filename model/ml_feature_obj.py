@@ -25,3 +25,21 @@ class MLFeatureObj:
         self.feature_data = None
         for v in self.test_iterations.values():
             v.deallocate_data()
+
+    def get_json(self):
+        d = {
+            "feature_name": self.feature_name,
+            "best_classifiers": self.best_classifiers
+        }
+
+        test_iterations = {}
+        for k, v in self.test_iterations.iteritems():
+            test_iterations[k] = v.get_json()
+        d["test_iterations"] = test_iterations
+
+        classifier_stats = {}
+        for k, v in self.classifier_stats.iteritems():
+            classifier_stats[k] = v.get_json()
+        d["classifier_stats"] = classifier_stats
+
+        return d

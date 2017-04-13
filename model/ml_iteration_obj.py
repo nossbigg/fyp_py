@@ -21,3 +21,13 @@ class MLIterationObj:
         self.train_label = None
         self.test_feature = None
         self.test_label = None
+
+    def get_json(self):
+        d = {}
+
+        classifiers_tested = {}
+        for k, v in self.classifiers_tested.iteritems():
+            classifiers_tested[k] = v.get_json()
+        d["classifiers_tested"] = classifiers_tested
+
+        return d

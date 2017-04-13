@@ -1,11 +1,9 @@
+import datetime
 import json
 import math
 import operator
 import random
 
-import datetime
-
-import jsonpickle
 import pandas as pd
 from controller import preprocessing_utils as PPU
 from controller.data_label_utils import SCORE_AFINN_LABEL, SCORE_SWN_LABELS, POS_TAG_UNIVERSAL_DICT
@@ -195,9 +193,9 @@ class MLUtils:
 
     @staticmethod
     def gen_train_suite(collection_name, df, target_label, source_label_dict, n_iterations, classifier_dict,
-                        test_ratio=0.2):
+                        test_ratio=0.2, description=""):
         # Collection level
-        ml_col_obj = MLCollectionObj(collection_name=collection_name, dataset=df)
+        ml_col_obj = MLCollectionObj(collection_name=collection_name, dataset=df, description=description)
 
         # Features
         features_tested = {k: MLFeatureObj(k, v) for k, v in source_label_dict.iteritems()}
@@ -215,8 +213,6 @@ class MLUtils:
                 train, test = train_test_split(df, test_size=test_ratio)
 
                 train_feature, test_feature = gen_feature_method(train, test)
-                # train_feature = pd.np.array(train[feature_label].tolist())
-                # test_feature = pd.np.array(test[feature_label].tolist())
                 train_label = pd.np.array(train[target_label].tolist())
                 test_label = pd.np.array(test[target_label].tolist())
 
@@ -244,6 +240,8 @@ class MLUtils:
                     pred = clf.predict(ito.test_feature)
 
                     clf_obj.score_accuracy = accuracy_score(ito.test_label, pred)
+                    clf_obj.persist_coefficients()
+                    pass
                     # TODO add more scores
 
         return ml_collection_obj
@@ -305,12 +303,19 @@ class MLUtils:
         ml_collection_obj.best_feature.append(sorted_feature_scores[0][0])
 
     @staticmethod
-    def persist_ml_test_result(path, data, filename=None):
+    def persist_ml_test_result(path, data, file_suffix=None, filename=None):
         if filename is None:
             filename = MLUtils.get_timestamp_for_ml_test()
-        full_path = path + "\\" + filename + ".json"
+
+        if file_suffix is not None:
+            file_suffix = " " + file_suffix
+        else:
+            file_suffix = ""
+
+        full_path = path + "\\" + filename + file_suffix + ".json"
         with open(full_path, 'wb') as outfile:
-            outfile.write(jsonpickle.encode(data))
+            # outfile.write(jsonpickle.encode(data))
+            outfile.write(json.JSONEncoder().encode(data))
 
     @staticmethod
     def get_timestamp_for_ml_test():
