@@ -18,6 +18,7 @@ Through the course of this project, several custom software was developed. An An
 
 ## Key Features
 * 80%+ accuracy in identifying rumors in homogeneous rumor/non-rumor tweet dataset using features generated from sentiment analysis libraries
+![Experiment 3 AFINN](documentation/imgs/exp3_afinn_chart.jpg "Experiment 3 AFINN")
 * Full data pipeline using MongoDB, pandas, NLTK, and scikit
 * Usage of sentiment analysis tools such as AFINN, SentiWordNet, and Part-of-Speech Tagger
 * Usage of machine learning models such as LR, SVM, NB, DT, GRB, RFR, and NN
