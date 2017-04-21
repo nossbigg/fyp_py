@@ -30,3 +30,4 @@ Links to full report and presentation
 
 ## Related Projects
 * [fyp_py_web](https://github.com/nossbigg/fyp_py_web): Web front-end for experiment results visualization and analysis
+* [fyp_tweet_harvester](https://github.com/nossbigg/fyp_tweet_harvester): Android-based tweet harvester
