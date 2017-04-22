@@ -17,7 +17,7 @@ The findings from the experiments indicate the following trends:
 Through the course of this project, several custom software was developed. An Android information harvester was developed to automate the task of collecting tweets. A tweet processing and analysis software were developed to automate the testing for the experiments. Lastly, A web user interface for data visualisation was developed to easily gain insights from the experiment results.
 
 ## Key Features
-* 80%+ accuracy in identifying rumors in homogeneous rumor/non-rumor tweet dataset using features generated from sentiment analysis libraries  
+* 70%+ accuracy in identifying rumors in homogeneous rumor/non-rumor tweet dataset using features generated from sentiment analysis libraries  
 ![Experiment 3 AFINN](documentation/imgs/exp3_afinn_chart.jpg "Experiment 3 AFINN")
 * Full data pipeline using MongoDB, pandas, NLTK, and scikit
 * Usage of sentiment analysis tools such as AFINN, SentiWordNet, and Part-of-Speech Tagger
